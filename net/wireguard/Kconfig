@@ -1,0 +1,7 @@
+config WIREGUARD
+	tristate "WireGuard (ATU: stub, disabled)"
+	default n
+
+config WIREGUARD_DEBUG
+	bool
+	default n
