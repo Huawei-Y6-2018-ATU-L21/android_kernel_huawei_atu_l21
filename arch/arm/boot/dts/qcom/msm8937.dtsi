@@ -51,7 +51,7 @@
 					dev = "/dev/block/platform/soc/7824900.sdhci/by-name/odm";
 					type = "ext4";
 					mnt_flags = "ro,nosuid,nodev,barrier=1";
-					fsmgr_flags = "wait,check,verify";
+					fsmgr_flags = "wait";
 					status = "ok";
 				};
 			};
