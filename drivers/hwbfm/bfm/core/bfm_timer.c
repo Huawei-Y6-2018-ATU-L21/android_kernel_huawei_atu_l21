@@ -120,8 +120,9 @@ static void bfm_check_boot_time(struct bfm_boot_timer_info *boot_timer_info)
             ? (boot_timer_info->long_timer_timeout_value / (unsigned int)(1000 * 60))
             : (boot_timer_info->short_timer_timeout_value / (unsigned int)(1000 * 60)));
         boot_timer_info->boot_timer_count_task_should_run = false;
-        mutex_unlock(&s_boot_timer_mutex);
-        boot_fail_err(KERNEL_BOOT_TIMEOUT, NO_SUGGESTION, NULL);
+        /* ATU-L21: non-EMUI systems never report "boot success"; do not reboot into eRecovery. */
+        BFMR_PRINT_SIMPLE_INFO("hwboot_timer: ATU: boot_fail_err skipped\n");
+        return;
     }
 
     list_for_each_entry(atimer, &action_timer_active_list, act_list) {
@@ -133,8 +134,8 @@ static void bfm_check_boot_time(struct bfm_boot_timer_info *boot_timer_info)
         if (atimer->action_timer_timing_count >= atimer->action_timer_timeout_value) {
             BFMR_PRINT_SIMPLE_INFO("hwboot_timer: %s timer expired! boot fail!\n",atimer->action_name);
             boot_timer_info->boot_timer_count_task_should_run = false;
-            mutex_unlock(&s_boot_timer_mutex);
-            boot_fail_err(KERNEL_BOOT_TIMEOUT, NO_SUGGESTION, NULL);
+            /* ATU-L21: do not reboot (see above). The caller releases s_boot_timer_mutex. */
+            return;
         }
     }
 }
